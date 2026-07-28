@@ -1,4 +1,10 @@
 from django.shortcuts import render
 
 def home(request):
-    return render(request, "tweets/home.html")
+    context = {
+        "name": "Neha",
+        "college": "I2IT Pune",
+        "year": 3
+    }
+
+    return render(request, "tweets/home.html", context)
