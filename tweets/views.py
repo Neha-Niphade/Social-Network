@@ -1,10 +1,21 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .models import Tweet
+from .forms import TweetForm
+
 
 def home(request):
-    context = {
-        "name": "Neha",
-        "college": "I2IT Pune",
-        "year": 3
-    }
+    tweets = Tweet.objects.all()
+    return render(request, "tweets/home.html", {"tweets": tweets})
 
-    return render(request, "tweets/home.html", context)
+
+def tweet_create(request):
+    if request.method == "POST":
+        form = TweetForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            return redirect("tweet_list")
+    else:
+        form = TweetForm()
+
+    return render(request, "tweets/tweet_form.html", {"form": form})

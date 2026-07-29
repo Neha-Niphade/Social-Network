@@ -4,18 +4,17 @@
     <title>Social Network</title>
 </head>
 <body>
+<h1>Recent Tweets</h1>
 
-<h1>Welcome to Social Network!! (; </h1>
-<h1>{{ name }}</h1>
+{% for tweet in tweets %}
 
-<h1>{{ name|upper }}</h1>
+    <h3>{{ tweet.text }}</h3>
 
-<h1>{{ name|lower }}</h1>
+{% empty %}
 
-<h1>{{ college }}</h1>
+    <h3>No Tweets Yet</h3>
 
-<h1>{{ college|upper }}</h1>
-<p>My first Django template.</p>
-
+{% endfor %}
 </body>
 </html>
+
