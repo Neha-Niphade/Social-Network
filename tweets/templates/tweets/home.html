@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Social Network</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
+
 <h1>Recent Tweets</h1>
 
 {% for tweet in tweets %}
@@ -15,6 +13,5 @@
     <h3>No Tweets Yet</h3>
 
 {% endfor %}
-</body>
-</html>
 
+{% endblock %}

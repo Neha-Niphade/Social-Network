@@ -1,19 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Create Tweet</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block content %}
 
 <h1>Create Tweet</h1>
 
 <form method="POST" enctype="multipart/form-data">
+
     {% csrf_token %}
 
     {{ form.as_p }}
 
-    <button type="submit">Post Tweet</button>
+    <button type="submit">
+        Post Tweet
+    </button>
+
 </form>
 
-</body>
-</html>
+{% endblock %}
