@@ -5,13 +5,13 @@
 <h1>Recent Tweets</h1>
 
 {% for tweet in tweets %}
-
-    <h3>{{ tweet.text }}</h3>
-
+    <div class="card mb-3">
+        <div class="card-body">
+            {{ tweet.text }}
+        </div>
+    </div>
 {% empty %}
-
-    <h3>No Tweets Yet</h3>
-
+    <p>No tweets yet.</p>
 {% endfor %}
 
-{% endblock %}
+{% endblock %}git commit -m "Implement reusable layout using Django template inheritance"
