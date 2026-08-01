@@ -1,8 +1,8 @@
 # Social Network
 
-A social networking platform built with Django, focused on backend engineering principles and scalable application design.
+A modern social networking platform built with Django, focused on backend engineering principles, scalable application design, and software engineering best practices.
 
-This project is being developed incrementally to explore Django's architecture, relational database design, authentication, ORM, request-response lifecycle, and software engineering best practices while following a professional Git workflow.
+This project is being developed incrementally to gain a deep understanding of Django's architecture, relational database design, authentication, ORM, request-response lifecycle, and production-oriented backend development while following a professional Git workflow.
 
 ---
 
@@ -11,7 +11,9 @@ This project is being developed incrementally to explore Django's architecture, 
 - Python
 - Django
 - SQLite
-- HTML & CSS
+- HTML5
+- CSS3
+- Bootstrap 5
 - Git
 - GitHub
 
@@ -21,61 +23,100 @@ This project is being developed incrementally to explore Django's architecture, 
 
 The primary objective of this project is to build a production-oriented social networking application while gaining practical experience with:
 
-- Backend architecture
-- Relational database design
+- Backend Architecture
+- Relational Database Design
 - Django ORM
 - Authentication & Authorization
-- CRUD operations
-- Media handling
-- REST API development
-- Clean project organization
-- Professional Git workflows
+- CRUD Operations
+- Static & Media Files
+- REST API Development
+- Clean Project Organization
+- Professional Git Workflows
 
 ---
 
 ## Current Features
 
+### Backend
+
 - Django project setup
-- Modular application structure
+- Modular MVT architecture
 - Tweet/Post data model
 - Database migrations
+- Django ORM integration
 - Django Admin integration
-- Image upload support
+
+### Frontend
+
+- Responsive Bootstrap 5 UI
+- Reusable base template using Template Inheritance
+- Navigation bar
+- Bootstrap Cards
+- Static CSS integration
+
+### Functionality
+
+- Home feed displaying all tweets
+- Tweet creation using Django Forms
+- Form validation
+- Dynamic template rendering
 - Version-controlled development workflow
+
+---
+
+## Concepts Explored
+
+- Django MVT Architecture
+- Request–Response Lifecycle
+- URL Routing
+- Views
+- Models
+- Django ORM
+- Django Forms
+- Template Inheritance
+- Django Template Language (DTL)
+- Static Files
+- Bootstrap 5
+- Git & GitHub Workflow
 
 ---
 
 ## Planned Features
 
-### User Management
+### Authentication
 
 - User Registration
-- Login & Logout
-- User Profiles
+- Login
+- Logout
+- Password Management
+
+### User Profiles
+
+- Profile Pages
 - Profile Images
+- Bio
+- User Dashboard
 
 ### Social Features
 
-- Create Posts
-- Edit Posts
-- Delete Posts
-- Likes
+- Edit Tweets
+- Delete Tweets
+- Like System
 - Comments
-- Follow System
+- Follow / Unfollow
 - Bookmarks
 - Personalized Feed
 
-### Backend
+### Backend Enhancements
 
-- Authentication
 - Authorization
-- Pagination
 - Search
-- File Uploads
+- Pagination
+- Image Uploads
 - REST APIs
 - API Documentation
 
-### Advanced
+### Advanced Features
 
 - PostgreSQL
 - Docker
@@ -88,17 +129,30 @@ The primary objective of this project is to build a production-oriented social n
 
 ## Project Structure
 
-```
+```text
 Social-Network/
 │
 ├── tweets/
+│   ├── migrations/
+│   ├── static/
+│   ├── templates/
+│   ├── forms.py
+│   ├── models.py
+│   ├── views.py
+│   └── admin.py
+│
 ├── twitter/
+│
+├── templates/
+│   └── base.html
+│
+├── db.sqlite3
 ├── manage.py
 ├── requirements.txt
 └── README.md
 ```
 
-> The project structure will evolve as additional modules are introduced.
+> The project structure will continue evolving as new modules and features are added.
 
 ---
 
@@ -124,7 +178,7 @@ python -m venv .venv
 
 Activate the virtual environment
 
-**Windows**
+### Windows
 
 ```bash
 .venv\Scripts\activate
@@ -133,10 +187,10 @@ Activate the virtual environment
 Install dependencies
 
 ```bash
-python -m pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 
-Apply database migrations
+Apply migrations
 
 ```bash
 python manage.py migrate
@@ -150,9 +204,17 @@ python manage.py runserver
 
 ---
 
+## Screenshots
+
+> Screenshots will be added as the project evolves.
+
+---
+
 ## Development Philosophy
 
-This repository follows an incremental development approach where every feature is:
+This repository follows an incremental development approach.
+
+Every feature is:
 
 - Designed
 - Implemented
@@ -160,15 +222,31 @@ This repository follows an incremental development approach where every feature 
 - Committed
 - Documented
 
-The focus is not only on building features but also on understanding the engineering decisions behind them.
+The objective is not only to build features but to understand the engineering decisions behind them.
 
 ---
 
 ## Repository Status
 
-🚧 Active Development
+🚧 **Active Development**
 
-This project is continuously evolving with new features, architectural improvements, and backend optimizations.
+### Progress
+
+- ✅ Django Setup
+- ✅ MVT Architecture
+- ✅ Models
+- ✅ ORM
+- ✅ Forms
+- ✅ Template Inheritance
+- ✅ Bootstrap 5
+- ✅ Static Files
+- ⏳ Authentication
+- ⏳ CRUD Operations
+- ⏳ User Profiles
+- ⏳ Likes & Comments
+- ⏳ Search
+- ⏳ REST API
+- ⏳ Deployment
 
 ---
 
@@ -178,4 +256,4 @@ This project is continuously evolving with new features, architectural improveme
 
 Computer Engineering Student
 
-Backend Development • Data Structures & Algorithms • System Design
+Backend Development • Django • Data Structures & Algorithms • System Design
