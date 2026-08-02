@@ -17,10 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from tweets import views
+from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('', views.home, name='tweet_list'),
     path('create/', views.tweet_create, name='tweet_create'),
+    path("register/", views.register, name="register"),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

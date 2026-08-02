@@ -11,7 +11,11 @@
     <div class="card-body">
 
         <h5 class="card-title">
-            👤 Anonymous
+             👤 {% if tweet.user %}
+             {{ tweet.user.username }}
+             {% else %}
+               Anonymous
+            {% endif %}
         </h5>
 
         <p class="card-text fs-5">
