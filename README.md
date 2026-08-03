@@ -225,7 +225,13 @@ Every feature is:
 The objective is not only to build features but to understand the engineering decisions behind them.
 
 ---
+## 📐 Architecture
 
+This project follows a modular, production-oriented backend architecture.
+
+For the complete architecture documentation, see:
+
+➡️ [Architecture Documentation](docs/architecture.md)
 ## Repository Status
 
 🚧 **Active Development**
@@ -240,7 +246,7 @@ The objective is not only to build features but to understand the engineering de
 - ✅ Template Inheritance
 - ✅ Bootstrap 5
 - ✅ Static Files
-- ⏳ Authentication
+- ✅ Authentication
 - ⏳ CRUD Operations
 - ⏳ User Profiles
 - ⏳ Likes & Comments
