@@ -22,9 +22,12 @@
             {{ tweet.text }}
         </p>
 
-        <a href="#" class="btn btn-outline-primary btn-sm">
-            Edit
+        {% if tweet.user == request.user %}
+        <a href="{% url 'tweet_edit' tweet.id %}"
+           class="btn btn-outline-primary btn-sm">
+           Edit
         </a>
+        {% endif %}
 
         <a href="#" class="btn btn-outline-danger btn-sm">
             Delete

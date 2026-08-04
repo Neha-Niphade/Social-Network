@@ -24,6 +24,11 @@ urlpatterns = [
 
     path('', views.home, name='tweet_list'),
     path('create/', views.tweet_create, name='tweet_create'),
+    path(
+    "tweet/<int:tweet_id>/edit/",
+    views.tweet_edit,
+    name="tweet_edit",
+    ),
     path("register/", views.register, name="register"),
     path('accounts/', include('django.contrib.auth.urls')),
 ]
