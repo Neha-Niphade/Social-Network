@@ -27,12 +27,14 @@
            class="btn btn-outline-primary btn-sm">
            Edit
         </a>
+
+        <a href="{% url 'tweet_delete' tweet.id %}"
+           class="btn btn-outline-danger btn-sm">
+           Delete
+        </a>
         {% endif %}
 
-        <a href="#" class="btn btn-outline-danger btn-sm">
-            Delete
-        </a>
-
+       
     </div>
 
 </div>

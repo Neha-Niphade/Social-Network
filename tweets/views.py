@@ -50,6 +50,27 @@ def tweet_edit(request, tweet_id):
 
     return render(request, "tweets/tweet_form.html", {"form": form})
 
+@login_required
+def tweet_delete(request, tweet_id):
+    # Step 1: Fetch the tweet
+    tweet = get_object_or_404(Tweet, pk=tweet_id)
+
+    # Step 2: Check ownership
+    if tweet.user != request.user:
+        raise PermissionDenied
+
+    # Step 3: Delete only after confirmation
+    if request.method == "POST":
+        tweet.delete()
+        return redirect("tweet_list")
+
+    # Step 4: Show confirmation page
+    return render(
+        request,
+        "tweets/tweet_confirm_delete.html",
+        {"tweet": tweet},
+    )
+    
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
