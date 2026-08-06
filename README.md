@@ -247,7 +247,7 @@ For the complete architecture documentation, see:
 - ✅ Bootstrap 5
 - ✅ Static Files
 - ✅ Authentication
-- ⏳ CRUD Operations
+- ✅ CRUD Operations
 - ⏳ User Profiles
 - ⏳ Likes & Comments
 - ⏳ Search
