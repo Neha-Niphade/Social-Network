@@ -248,7 +248,7 @@ For the complete architecture documentation, see:
 - ✅ Static Files
 - ✅ Authentication
 - ✅ CRUD Operations
-- ⏳ User Profiles
+- ✅ User Profiles
 - ⏳ Likes & Comments
 - ⏳ Search
 - ⏳ REST API
