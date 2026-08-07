@@ -87,3 +87,14 @@ def register(request):
         "registration/register.html",
         {"form": form},
     )
+
+@login_required
+def tweet_like(request, tweet_id):
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+
+    if tweet.likes.filter(id=request.user.id).exists():
+        tweet.likes.remove(request.user)
+    else:
+        tweet.likes.add(request.user)
+
+    return redirect("tweet_list")

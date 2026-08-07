@@ -5,7 +5,14 @@
 <h1 class="mb-4">Recent Tweets</h1>
 
 {% for tweet in tweets %}
-
+{% if user.is_authenticated %}
+<form action="{% url 'tweet_like' tweet.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">
+        ❤️ {{ tweet.likes.count }}
+    </button>
+</form>
+{% endif %}
 <div class="card shadow-sm mb-4 border-0 rounded-4">
 
     <div class="card-body">
