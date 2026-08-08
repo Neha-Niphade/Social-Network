@@ -14,3 +14,20 @@ class Tweet(models.Model):
 
     def __str__(self):
         return self.text[:30]
+
+class Comment(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    tweet = models.ForeignKey(
+        Tweet,
+        on_delete=models.CASCADE,
+        related_name="comments",
+    )
+    text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.text[:30]

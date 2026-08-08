@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied
+from .models import Tweet, Comment
 
 def home(request):
     tweets = Tweet.objects.all()
@@ -96,5 +97,23 @@ def tweet_like(request, tweet_id):
         tweet.likes.remove(request.user)
     else:
         tweet.likes.add(request.user)
+
+    return redirect("tweet_list")
+
+@login_required
+def comment_create(request, tweet_id):
+    if request.method != "POST":
+        return redirect("tweet_list")
+
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+
+    text = request.POST.get("text", "").strip()
+
+    if text:
+        Comment.objects.create(
+            user=request.user,
+            tweet=tweet,
+            text=text,
+        )
 
     return redirect("tweet_list")

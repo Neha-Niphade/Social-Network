@@ -22,4 +22,9 @@ urlpatterns = [
          views.tweet_like,
          name="tweet_like",
     ),
+    path(
+    "tweet/<int:tweet_id>/comment/",
+    views.comment_create,
+    name="comment_create",
+    ),
 ]
