@@ -9,3 +9,4 @@ urlpatterns = [
     name="follow_user",
 ),
 ]
+

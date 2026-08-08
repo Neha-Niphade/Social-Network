@@ -1,22 +1,33 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.shortcuts import get_object_or_404, redirect,render
-from tweets.models import Tweet
+from django.shortcuts import get_object_or_404, render, redirect
+
 from .models import Profile
+from tweets.models import Tweet
+
 
 def profile_detail(request, username):
     user = get_object_or_404(User, username=username)
-
     profile = user.profile
+    tweets = Tweet.objects.filter(user=user)
 
-    tweets = Tweet.objects.filter(user=user).order_by("-created_at")
+    is_following = False
 
-    context = {
-        "profile": profile,
-        "tweets": tweets,
-    }
+    if request.user.is_authenticated:
+        is_following = request.user.profile.following.filter(
+            id=user.id
+        ).exists()
 
-    return render(request, "profiles/profile_detail.html", context)
+    return render(
+        request,
+        "profiles/profile_detail.html",
+        {
+            "profile": profile,
+            "tweets": tweets,
+            "is_following": is_following,
+        },
+    )
+
 
 @login_required
 def follow_user(request, username):
