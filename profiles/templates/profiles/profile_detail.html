@@ -15,6 +15,16 @@
             {{ profile.user.username }}
         </h2>
 
+        <div class="mt-3">
+    <span class="me-3">
+        <strong>{{ followers_count }}</strong> Followers
+    </span>
+
+    <span>
+        <strong>{{ following_count }}</strong> Following
+    </span>
+    </div>
+
         {% if user.is_authenticated and user != profile.user %}
 
             <form method="POST"
