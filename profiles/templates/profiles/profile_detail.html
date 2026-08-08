@@ -1,67 +1,35 @@
-{% extends "base.html" %}
+<div class="text-center">
 
-{% block content %}
+    <img src="{{ profile.avatar.url }}"
+         class="rounded-circle"
+         width="150"
+         height="150">
 
-<div class="container mt-4">
+    <h2 class="mt-3">
+        {{ profile.user.username }}
+    </h2>
 
-    <div class="card shadow-sm p-4">
+    {% if user.is_authenticated and user != profile.user %}
+        <form method="POST"
+              action="{% url 'follow_user' profile.user.username %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary mt-2">
+                Follow / Unfollow
+            </button>
+        </form>
+    {% endif %}
 
-        <div class="text-center">
+    <p>{{ profile.bio }}</p>
 
-            <img src="{{ profile.avatar.url }}"
-                 class="rounded-circle"
-                 width="150"
-                 height="150">
+    <p>
+        📍 {{ profile.location }}
+    </p>
 
-            <h2 class="mt-3">
-                {{ profile.user.username }}
-            </h2>
-
-            <p>{{ profile.bio }}</p>
-
-            <p>
-                📍 {{ profile.location }}
-            </p>
-
-            <p>
-                🌐
-                <a href="{{ profile.website }}">
-                    {{ profile.website }}
-                </a>
-            </p>
-
-        </div>
-
-    </div>
-
-    <hr>
-
-    <h3>
-        Tweets
-    </h3>
-
-    {% for tweet in tweets %}
-
-        <div class="card mt-3 p-3">
-
-            <p>{{ tweet.text }}</p>
-
-            {% if tweet.photo %}
-                <img src="{{ tweet.photo.url }}" class="img-fluid">
-            {% endif %}
-
-            <small>
-                {{ tweet.created_at }}
-            </small>
-
-        </div>
-
-    {% empty %}
-
-        <p>No Tweets Yet.</p>
-
-    {% endfor %}
+    <p>
+        🌐
+        <a href="{{ profile.website }}">
+            {{ profile.website }}
+        </a>
+    </p>
 
 </div>
-
-{% endblock %}

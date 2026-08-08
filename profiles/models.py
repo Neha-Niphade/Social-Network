@@ -30,6 +30,11 @@ class Profile(models.Model):
         null=True,
         blank=True
     )
+    following = models.ManyToManyField(
+    User,
+    related_name="followers",
+    blank=True,
+    )
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
