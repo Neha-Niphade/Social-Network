@@ -45,3 +45,28 @@ def follow_user(request, username):
         profile.following.add(target_user)
 
     return redirect("profile_detail", username=username)
+
+@login_required
+def connections(request, username, connection_type):
+    user = get_object_or_404(User, username=username)
+
+    if connection_type == "followers":
+        users = user.followers.all()
+        title = "Followers"
+
+    elif connection_type == "following":
+        users = user.profile.following.all()
+        title = "Following"
+
+    else:
+        return redirect("profile_detail", username=username)
+
+    return render(
+        request,
+        "profiles/connections.html",
+        {
+            "users": users,
+            "title": title,
+            "profile_user": user,
+        },
+    )

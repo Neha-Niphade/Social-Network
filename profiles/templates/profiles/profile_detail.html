@@ -17,11 +17,15 @@
 
         <div class="mt-3">
     <span class="me-3">
-        <strong>{{ followers_count }}</strong> Followers
+        <a href="{% url 'connections' profile.user.username 'followers' %}">
+    <strong>{{ followers_count }}</strong> Followers
+        </a>
     </span>
 
     <span>
-        <strong>{{ following_count }}</strong> Following
+        <a href="{% url 'connections' profile.user.username 'following' %}">
+    <strong>{{ following_count }}</strong> Following
+       </a>
     </span>
     </div>
 

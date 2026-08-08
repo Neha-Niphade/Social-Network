@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{ title }}</h2>
+
+{% for user in users %}
+
+    <div class="card mt-3 p-3">
+        <a href="{% url 'profile_detail' user.user.username %}">
+            {{ user.user.username }}
+        </a>
+    </div>
+
+{% empty %}
+
+    <p>No {{ title|lower }} yet.</p>
+
+{% endfor %}
+
+{% endblock %}

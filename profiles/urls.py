@@ -7,6 +7,11 @@ urlpatterns = [
     "profile/<str:username>/follow/",
     views.follow_user,
     name="follow_user",
-),
+    ),
+    path(
+    "<str:username>/connections/<str:connection_type>/",
+    views.connections,
+    name="connections",
+    ),
 ]
 
