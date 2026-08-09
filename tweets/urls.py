@@ -36,5 +36,10 @@ urlpatterns = [
     "comment/<int:comment_id>/edit/",
     views.comment_edit,
     name="comment_edit",
-),
+   ),
+   path(
+    "comment/<int:comment_id>/like/",
+    views.comment_like,
+    name="comment_like",
+   ),
 ]

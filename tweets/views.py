@@ -151,3 +151,15 @@ def comment_edit(request, comment_id):
         "tweets/comment_edit.html",
         {"comment": comment},
     )
+    
+@login_required
+def comment_like(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if request.method == "POST":
+        if comment.likes.filter(id=request.user.id).exists():
+            comment.likes.remove(request.user)
+        else:
+            comment.likes.add(request.user)
+
+    return redirect("tweet_list")

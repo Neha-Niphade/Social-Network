@@ -27,7 +27,12 @@ class Comment(models.Model):
         related_name="comments",
     )
     text = models.TextField()
+    
+    likes = models.ManyToManyField(
+    User,
+    related_name="liked_comments",
+    blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
-
     def __str__(self):
         return self.text[:30]
