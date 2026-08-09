@@ -51,4 +51,9 @@ urlpatterns = [
     views.tweet_bookmark,
     name="tweet_bookmark",
    ),
+   path(
+    "saved/",
+    views.saved_tweets,
+    name="saved_tweets",
+   ),
 ]

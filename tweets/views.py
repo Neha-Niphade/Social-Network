@@ -183,3 +183,13 @@ def tweet_bookmark(request, tweet_id):
         tweet.bookmarks.add(request.user)
 
     return redirect("tweet_list")
+
+@login_required
+def saved_tweets(request):
+    tweets = request.user.bookmarked_tweets.all()
+
+    return render(
+        request,
+        "tweets/saved_tweets.html",
+        {"tweets": tweets},
+    )
