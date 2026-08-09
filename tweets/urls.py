@@ -5,7 +5,11 @@ urlpatterns = [
     path("", views.home, name="tweet_list"),
 
     path("create/", views.tweet_create, name="tweet_create"),
-
+    path(
+    "tweet/<int:tweet_id>/",
+    views.tweet_detail,
+    name="tweet_detail",
+    ),
     path(
         "tweet/<int:tweet_id>/edit/",
         views.tweet_edit,

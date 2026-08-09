@@ -151,7 +151,7 @@ def comment_edit(request, comment_id):
         "tweets/comment_edit.html",
         {"comment": comment},
     )
-    
+
 @login_required
 def comment_like(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -163,3 +163,12 @@ def comment_like(request, comment_id):
             comment.likes.add(request.user)
 
     return redirect("tweet_list")
+    
+def tweet_detail(request, tweet_id):
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+
+    return render(
+        request,
+        "tweets/tweet_detail.html",
+        {"tweet": tweet},
+    )

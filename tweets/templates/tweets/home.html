@@ -18,7 +18,14 @@
         </h5>
 
         <p class="card-text fs-5">
+            <a href="{% url 'tweet_detail' tweet.id %}"
+            class="text-decoration-none text-dark">
+
+           <p class="card-text fs-5">
             {{ tweet.text }}
+           </p>
+
+</a>
         </p>
 
         {% if tweet.photo %}
