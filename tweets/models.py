@@ -10,8 +10,14 @@ class Tweet(models.Model):
     related_name="liked_tweets",
     blank=True,
     )
-    created_at = models.DateTimeField(auto_now_add=True)
 
+    bookmarks = models.ManyToManyField(
+    User,
+    related_name="bookmarked_tweets",
+    blank=True,
+   )
+    created_at = models.DateTimeField(auto_now_add=True)
+    
     def __str__(self):
         return self.text[:30]
 

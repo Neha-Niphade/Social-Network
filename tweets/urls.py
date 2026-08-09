@@ -46,4 +46,9 @@ urlpatterns = [
     views.comment_like,
     name="comment_like",
    ),
+   path(
+    "tweet/<int:tweet_id>/bookmark/",
+    views.tweet_bookmark,
+    name="tweet_bookmark",
+   ),
 ]

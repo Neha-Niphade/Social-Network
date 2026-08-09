@@ -172,3 +172,14 @@ def tweet_detail(request, tweet_id):
         "tweets/tweet_detail.html",
         {"tweet": tweet},
     )
+
+@login_required
+def tweet_bookmark(request, tweet_id):
+    tweet = get_object_or_404(Tweet, id=tweet_id)
+
+    if tweet.bookmarks.filter(id=request.user.id).exists():
+        tweet.bookmarks.remove(request.user)
+    else:
+        tweet.bookmarks.add(request.user)
+
+    return redirect("tweet_list")
