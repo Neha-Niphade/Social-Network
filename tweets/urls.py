@@ -27,4 +27,9 @@ urlpatterns = [
     views.comment_create,
     name="comment_create",
     ),
+    path(
+    "comment/<int:comment_id>/delete/",
+    views.comment_delete,
+    name="comment_delete",
+    ),
 ]

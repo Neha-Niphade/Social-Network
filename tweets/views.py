@@ -117,3 +117,15 @@ def comment_create(request, tweet_id):
         )
 
     return redirect("tweet_list")
+
+@login_required
+def comment_delete(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if comment.user != request.user:
+        return redirect("tweet_list")
+
+    if request.method == "POST":
+        comment.delete()
+
+    return redirect("tweet_list")
