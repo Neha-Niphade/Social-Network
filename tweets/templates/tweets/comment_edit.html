@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Edit Comment</h3>
+
+<form method="POST">
+
+    {% csrf_token %}
+
+    <textarea
+        name="text"
+        class="form-control"
+        rows="3"
+        required
+    >{{ comment.text }}</textarea>
+
+    <button type="submit" class="btn btn-primary mt-2">
+        Save Changes
+    </button>
+
+    <a href="{% url 'tweet_list' %}"
+       class="btn btn-secondary mt-2">
+        Cancel
+    </a>
+
+</form>
+
+{% endblock %}
