@@ -8,10 +8,24 @@ from django.core.exceptions import PermissionDenied
 from .models import Tweet, Comment,Notification
 from django.contrib.auth.models import User
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 def home(request):
-    tweets = Tweet.objects.all()
-    return render(request, "tweets/home.html", {"tweets": tweets})
+    tweets = Tweet.objects.all().order_by("-created_at")
+
+    paginator = Paginator(tweets, 10)
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "tweets/home.html",
+        {
+            "page_obj": page_obj,
+        },
+    )
 
 
 @login_required
