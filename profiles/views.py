@@ -55,13 +55,14 @@ def follow_user(request, username):
             )
 
     return redirect("profile_detail", username=username)
-
 @login_required
 def connections(request, username, connection_type):
     user = get_object_or_404(User, username=username)
 
     if connection_type == "followers":
-        users = user.followers.all()
+        users = User.objects.filter(
+            profile__in=user.followers.all()
+        )
         title = "Followers"
 
     elif connection_type == "following":

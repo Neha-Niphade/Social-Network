@@ -254,10 +254,16 @@ def following_feed(request):
         user__in=following_users
     ).order_by("-created_at")
 
+    paginator = Paginator(tweets, 10)
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
     return render(
         request,
         "tweets/following_feed.html",
-        {"tweets": tweets},
+        {"page_obj": page_obj},
     )
 
 @login_required
