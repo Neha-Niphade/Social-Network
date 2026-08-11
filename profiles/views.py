@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 
 from .models import Profile
-from tweets.models import Tweet
+from tweets.models import Tweet,Notification
 
 
 def profile_detail(request, username):
@@ -40,9 +40,19 @@ def follow_user(request, username):
     profile = request.user.profile
 
     if profile.following.filter(id=target_user.id).exists():
+        # Already following → unfollow
         profile.following.remove(target_user)
+
     else:
+        # Not following → follow
         profile.following.add(target_user)
+
+        # Don't notify when following yourself
+        if target_user != request.user:
+            Notification.objects.create(
+                user=target_user,
+                message=f"{request.user.username} started following you."
+            )
 
     return redirect("profile_detail", username=username)
 

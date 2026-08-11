@@ -66,4 +66,9 @@ path(
     views.following_feed,
     name="following_feed",
 ),
+path(
+    "notifications/",
+    views.notifications,
+    name="notifications",
+),
 ]

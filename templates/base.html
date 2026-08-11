@@ -49,6 +49,9 @@
                 <a href="{% url 'saved_tweets' %}" class="nav-link">
                     🔖 Saved
                 </a>
+                <a href="{% url 'notifications' %}" class="nav-link">
+                    🔔 Notifications
+                </a>
                 <form method="POST" action="{% url 'logout' %}" class="d-inline">
                     {% csrf_token %}
                     <button class="btn btn-danger btn-sm">

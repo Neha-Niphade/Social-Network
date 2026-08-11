@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied
-from .models import Tweet, Comment
+from .models import Tweet, Comment,Notification
 from django.contrib.auth.models import User
 from django.db.models import Q
 
@@ -97,8 +97,15 @@ def tweet_like(request, tweet_id):
 
     if tweet.likes.filter(id=request.user.id).exists():
         tweet.likes.remove(request.user)
+
     else:
         tweet.likes.add(request.user)
+
+        if tweet.user != request.user:
+            Notification.objects.create(
+                user=tweet.user,
+                message=f"{request.user.username} liked your tweet."
+            )
 
     return redirect("tweet_list")
 
@@ -117,6 +124,12 @@ def comment_create(request, tweet_id):
             tweet=tweet,
             text=text,
         )
+
+        if tweet.user != request.user:
+            Notification.objects.create(
+                user=tweet.user,
+                message=f"{request.user.username} commented on your tweet."
+            )
 
     return redirect("tweet_list")
 
@@ -231,4 +244,14 @@ def following_feed(request):
         request,
         "tweets/following_feed.html",
         {"tweets": tweets},
+    )
+
+@login_required
+def notifications(request):
+    notifications = request.user.notifications.all().order_by("-created_at")
+
+    return render(
+        request,
+        "tweets/notifications.html",
+        {"notifications": notifications},
     )
