@@ -56,4 +56,9 @@ urlpatterns = [
     views.saved_tweets,
     name="saved_tweets",
    ),
+   path(
+    "search/",
+    views.search,
+    name="search",
+),
 ]

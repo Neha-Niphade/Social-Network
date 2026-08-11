@@ -249,8 +249,8 @@ For the complete architecture documentation, see:
 - ✅ Authentication
 - ✅ CRUD Operations
 - ✅ User Profiles
-- ⏳ Likes & Comments
-- ⏳ Search
+- ✅ Likes & Comments
+- ✅ Search
 - ⏳ REST API
 - ⏳ Deployment
 

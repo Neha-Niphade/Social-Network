@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mt-4">🔍 Search</h2>
+
+<form method="GET"
+      action="{% url 'search' %}"
+      class="mt-3">
+
+    <div class="input-group">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            class="form-control"
+            placeholder="Search tweets or users..."
+        >
+
+        <button type="submit"
+                class="btn btn-primary">
+            Search
+        </button>
+
+    </div>
+
+</form>
+
+
+{% if query %}
+
+    <h4 class="mt-4">
+        Results for "{{ query }}"
+    </h4>
+
+
+    <!-- Users -->
+
+    <h5 class="mt-4">
+        👤 Users
+    </h5>
+
+    {% for user in users %}
+
+        <div class="card mt-2">
+            <div class="card-body">
+
+                <a href="{% url 'profile_detail' user.username %}">
+                    {{ user.username }}
+                </a>
+
+            </div>
+        </div>
+
+    {% empty %}
+
+        <p class="text-muted">
+            No users found.
+        </p>
+
+    {% endfor %}
+
+
+    <!-- Tweets -->
+
+    <h5 class="mt-4">
+        📝 Tweets
+    </h5>
+
+    {% for tweet in tweets %}
+
+        <div class="card mt-2">
+
+            <div class="card-body">
+
+                <h6>
+                    👤 {{ tweet.user.username }}
+                </h6>
+
+                <p>
+                    {{ tweet.text }}
+                </p>
+
+                <a href="{% url 'tweet_detail' tweet.id %}"
+                   class="btn btn-outline-primary btn-sm">
+                    View Tweet
+                </a>
+
+            </div>
+
+        </div>
+
+    {% empty %}
+
+        <p class="text-muted">
+            No tweets found.
+        </p>
+
+    {% endfor %}
+
+{% endif %}
+
+{% endblock %}

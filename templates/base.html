@@ -34,6 +34,15 @@
                 <a class="btn btn-primary btn-sm me-2" href="{% url 'tweet_create' %}">
                     Create Tweet
                 </a>
+                <form method="GET" action="{% url 'search' %}" class="d-flex">
+
+                    <input type="text" name="q" class="form-control me-2" placeholder="Search...">
+
+                    <button type="submit" class="btn btn-outline-primary">
+                        🔍
+                    </button>
+
+                </form>
                 <a href="{% url 'saved_tweets' %}" class="nav-link">
                     🔖 Saved
                 </a>

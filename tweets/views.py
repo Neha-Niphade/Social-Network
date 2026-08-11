@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import PermissionDenied
 from .models import Tweet, Comment
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 def home(request):
     tweets = Tweet.objects.all()
@@ -192,4 +194,26 @@ def saved_tweets(request):
         request,
         "tweets/saved_tweets.html",
         {"tweets": tweets},
+    )
+
+def search(request):
+    query = request.GET.get("q", "").strip()
+
+    tweets = Tweet.objects.filter(
+    Q(text__icontains=query) |
+    Q(user__username__icontains=query)
+    )
+
+    users = User.objects.filter(
+        username__icontains=query
+    )
+
+    return render(
+        request,
+        "tweets/search.html",
+        {
+            "query": query,
+            "tweets": tweets,
+            "users": users,
+        },
     )
