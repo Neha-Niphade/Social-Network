@@ -61,4 +61,9 @@ urlpatterns = [
     views.search,
     name="search",
 ),
+path(
+    "following/",
+    views.following_feed,
+    name="following_feed",
+),
 ]

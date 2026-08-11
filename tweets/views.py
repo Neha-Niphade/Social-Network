@@ -217,3 +217,18 @@ def search(request):
             "users": users,
         },
     )
+
+@login_required
+def following_feed(request):
+
+    following_users = request.user.profile.following.all()
+
+    tweets = Tweet.objects.filter(
+        user__in=following_users
+    ).order_by("-created_at")
+
+    return render(
+        request,
+        "tweets/following_feed.html",
+        {"tweets": tweets},
+    )
