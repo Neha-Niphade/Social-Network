@@ -50,7 +50,15 @@
                     🔖 Saved
                 </a>
                 <a href="{% url 'notifications' %}" class="nav-link">
+
                     🔔 Notifications
+
+                    {% if unread_notifications > 0 %}
+                    <span class="badge bg-danger">
+                        {{ unread_notifications }}
+                    </span>
+                    {% endif %}
+
                 </a>
                 <form method="POST" action="{% url 'logout' %}" class="d-inline">
                     {% csrf_token %}

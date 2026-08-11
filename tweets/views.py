@@ -249,6 +249,7 @@ def following_feed(request):
 @login_required
 def notifications(request):
     notifications = request.user.notifications.all().order_by("-created_at")
+    notifications.update(is_read=True)
 
     return render(
         request,
