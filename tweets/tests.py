@@ -1,9 +1,6 @@
 from django.test import TestCase
-
-# Create your tests here.
-from django.test import TestCase
 from django.contrib.auth.models import User
-from .models import Tweet, Notification
+from .models import Tweet, Comment, Notification
 
 
 class TweetTestCase(TestCase):
@@ -14,6 +11,7 @@ class TweetTestCase(TestCase):
             password="testpass123"
         )
 
+    # 1. Test tweet creation
     def test_user_can_create_tweet(self):
         self.client.login(
             username="testuser",
@@ -36,133 +34,277 @@ class TweetTestCase(TestCase):
             ).exists()
         )
 
-def test_user_cannot_edit_other_users_tweet(self):
-    other_user = User.objects.create_user(
-        username="otheruser",
-        password="otherpass123"
-    )
+    # 2. User cannot edit another user's tweet
+    def test_user_cannot_edit_other_users_tweet(self):
+        other_user = User.objects.create_user(
+            username="otheruser",
+            password="otherpass123"
+        )
 
-    tweet = Tweet.objects.create(
-        user=other_user,
-        text="Other user's tweet"
-    )
+        tweet = Tweet.objects.create(
+            user=other_user,
+            text="Other user's tweet"
+        )
 
-    self.client.login(
-        username="testuser",
-        password="testpass123"
-    )
+        self.client.login(
+            username="testuser",
+            password="testpass123"
+        )
 
-    response = self.client.post(
-        f"/tweet/{tweet.id}/edit/",
-        {
-            "text": "I changed your tweet!"
-        }
-    )
+        response = self.client.post(
+            f"/tweet/{tweet.id}/edit/",
+            {
+                "text": "I changed your tweet!"
+            }
+        )
 
-    self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
-    tweet.refresh_from_db()
+        tweet.refresh_from_db()
 
-    self.assertEqual(
-        tweet.text,
-        "Other user's tweet"
+        self.assertEqual(
+            tweet.text,
+            "Other user's tweet"
+        )
 
-    )
+    # 3. Test like and unlike
+    def test_user_can_like_and_unlike_tweet(self):
+        tweet = Tweet.objects.create(
+            user=self.user,
+            text="Tweet for testing likes"
+        )
 
-def test_user_can_like_and_unlike_tweet(self):
-    tweet = Tweet.objects.create(
-        user=self.user,
-        text="Tweet for testing likes"
-    )
+        self.client.login(
+            username="testuser",
+            password="testpass123"
+        )
 
-    self.client.login(
-        username="testuser",
-        password="testpass123"
-    )
+        # Like
+        response = self.client.post(
+            f"/tweet/{tweet.id}/like/"
+        )
 
-    # Like
-    response = self.client.post(
-        f"/tweet/{tweet.id}/like/"
-    )
+        self.assertEqual(response.status_code, 302)
 
-    self.assertEqual(response.status_code, 302)
-    self.assertTrue(
-        tweet.likes.filter(id=self.user.id).exists()
-    )
+        self.assertTrue(
+            tweet.likes.filter(
+                id=self.user.id
+            ).exists()
+        )
 
-    # Unlike
-    response = self.client.post(
-        f"/tweet/{tweet.id}/like/"
-    )
+        # Unlike
+        response = self.client.post(
+            f"/tweet/{tweet.id}/like/"
+        )
 
-    self.assertEqual(response.status_code, 302)
-    self.assertFalse(
-        tweet.likes.filter(id=self.user.id).exists()
-    )
+        self.assertEqual(response.status_code, 302)
 
-def test_like_creates_notification(self):
-    other_user = User.objects.create_user(
-        username="otheruser",
-        password="otherpass123"
-    )
+        self.assertFalse(
+            tweet.likes.filter(
+                id=self.user.id
+            ).exists()
+        )
 
-    tweet = Tweet.objects.create(
-        user=other_user,
-        text="Tweet for notification test"
-    )
+    # 4. Like creates notification
+    def test_like_creates_notification(self):
+        other_user = User.objects.create_user(
+            username="otheruser",
+            password="otherpass123"
+        )
 
-    self.client.login(
-        username="testuser",
-        password="testpass123"
-    )
+        tweet = Tweet.objects.create(
+            user=other_user,
+            text="Tweet for notification test"
+        )
 
-    self.client.post(
-        f"/tweet/{tweet.id}/like/"
-    )
+        self.client.login(
+            username="testuser",
+            password="testpass123"
+        )
 
-    notification = Notification.objects.filter(
-        user=other_user
-    ).first()
+        self.client.post(
+            f"/tweet/{tweet.id}/like/"
+        )
 
-    self.assertIsNotNone(notification)
+        notification = Notification.objects.filter(
+            user=other_user
+        ).first()
 
-    self.assertEqual(
-        notification.message,
-        "testuser liked your tweet."
-    )
+        self.assertIsNotNone(notification)
 
-def test_comment_creates_notification(self):
-    other_user = User.objects.create_user(
-        username="otheruser",
-        password="otherpass123"
-    )
+        self.assertEqual(
+            notification.message,
+            "testuser liked your tweet."
+        )
 
-    tweet = Tweet.objects.create(
-        user=other_user,
-        text="Tweet for comment notification"
-    )
+    # 5. Comment creates notification
+    def test_comment_creates_notification(self):
+        other_user = User.objects.create_user(
+            username="otheruser",
+            password="otherpass123"
+        )
 
-    self.client.login(
-        username="testuser",
-        password="testpass123"
-    )
+        tweet = Tweet.objects.create(
+            user=other_user,
+            text="Tweet for comment notification"
+        )
 
-    response = self.client.post(
-        f"/tweet/{tweet.id}/comment/",
-        {
-            "text": "Nice tweet!"
-        }
-    )
+        self.client.login(
+            username="testuser",
+            password="testpass123"
+        )
 
-    self.assertEqual(response.status_code, 302)
+        response = self.client.post(
+            f"/tweet/{tweet.id}/comment/",
+            {
+                "text": "Nice tweet!"
+            }
+        )
 
-    notification = Notification.objects.filter(
-        user=other_user
-    ).first()
+        self.assertEqual(response.status_code, 302)
 
-    self.assertIsNotNone(notification)
+        notification = Notification.objects.filter(
+            user=other_user
+        ).first()
 
-    self.assertEqual(
-        notification.message,
-        "testuser commented on your tweet."
-    )
+        self.assertIsNotNone(notification)
+
+        self.assertEqual(
+            notification.message,
+            "testuser commented on your tweet."
+        )
+
+    # 6. User cannot delete another user's tweet
+    def test_user_cannot_delete_other_users_tweet(self):
+        other_user = User.objects.create_user(
+            username="deleteuser",
+            password="deletepass123"
+        )
+
+        tweet = Tweet.objects.create(
+            user=other_user,
+            text="This tweet should not be deleted"
+        )
+
+        self.client.login(
+            username="testuser",
+            password="testpass123"
+        )
+
+        response = self.client.post(
+            f"/tweet/{tweet.id}/delete/"
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+        self.assertTrue(
+            Tweet.objects.filter(
+                id=tweet.id
+            ).exists()
+        )
+
+    # 7. User cannot edit another user's comment
+    def test_user_cannot_edit_other_users_comment(self):
+        other_user = User.objects.create_user(
+            username="commentuser",
+            password="commentpass123"
+        )
+
+        tweet = Tweet.objects.create(
+            user=other_user,
+            text="Tweet for comment test"
+        )
+
+        comment = Comment.objects.create(
+            user=other_user,
+            tweet=tweet,
+            text="Original comment"
+        )
+
+        self.client.login(
+            username="testuser",
+            password="testpass123"
+        )
+
+        response = self.client.post(
+            f"/comment/{comment.id}/edit/",
+            {
+                "text": "Changed comment"
+            }
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+        comment.refresh_from_db()
+
+        self.assertEqual(
+            comment.text,
+            "Original comment"
+        )
+
+    # 8. User cannot delete another user's comment
+    def test_user_cannot_delete_other_users_comment(self):
+        other_user = User.objects.create_user(
+            username="commentdeleteuser",
+            password="commentdeletepass123"
+        )
+
+        tweet = Tweet.objects.create(
+            user=other_user,
+            text="Tweet for delete comment test"
+        )
+
+        comment = Comment.objects.create(
+            user=other_user,
+            tweet=tweet,
+            text="Comment that should remain"
+        )
+
+        self.client.login(
+            username="testuser",
+            password="testpass123"
+        )
+
+        response = self.client.post(
+            f"/comment/{comment.id}/delete/"
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+        self.assertTrue(
+            Comment.objects.filter(
+                id=comment.id
+            ).exists()
+        )
+
+    # 9. Logged-out users cannot create tweets
+    def test_logged_out_user_cannot_create_tweet(self):
+        response = self.client.get("/create/")
+
+        self.assertEqual(response.status_code, 302)
+
+        self.assertIn(
+            "/accounts/login/",
+            response.url
+        )
+
+    # 10. Logged-out users cannot like a tweet
+    def test_logged_out_user_cannot_like_tweet(self):
+        tweet = Tweet.objects.create(
+            user=self.user,
+            text="Tweet for authentication test"
+        )
+
+        response = self.client.post(
+            f"/tweet/{tweet.id}/like/"
+        )
+
+        self.assertEqual(response.status_code, 302)
+
+        self.assertTrue(
+            response.url.startswith("/accounts/login/")
+        )
+
+        self.assertFalse(
+            tweet.likes.exists()
+        )
