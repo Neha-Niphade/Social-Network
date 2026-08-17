@@ -25,9 +25,7 @@ SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -121,3 +119,5 @@ USE_TZ = True
 STATIC_URL = 'static/'
 LOGIN_REDIRECT_URL = "tweet_list"
 LOGOUT_REDIRECT_URL = "tweet_list"
+MEDIA_URL = "/photos/"
+MEDIA_ROOT = BASE_DIR / "photos"
