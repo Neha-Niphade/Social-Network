@@ -5,7 +5,9 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h2 class="fw-bold mb-1">Home Feed</h2>
-        <p class="text-muted mb-0">See what's happening in your network.</p>
+        <p class="text-muted mb-0">
+            See what's happening in your network.
+        </p>
     </div>
 
     <a href="{% url 'tweet_create' %}" class="btn btn-primary">
@@ -42,7 +44,9 @@
 
         </div>
 
+
         {% if tweet.user == request.user %}
+
         <div class="dropdown">
 
             <button
@@ -77,6 +81,7 @@
             </ul>
 
         </div>
+
         {% endif %}
 
     </div>
@@ -98,16 +103,43 @@
     {% endif %}
 
 
-    <!-- Actions -->
+    <!-- Tweet actions -->
     <div class="tweet-actions">
 
+        <!-- Like -->
+        <form
+            method="POST"
+            action="{% url 'tweet_like' tweet.id %}"
+            class="d-inline"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="tweet-action-btn {% if request.user in tweet.likes.all %}liked{% endif %}"
+            >
+                {% if request.user in tweet.likes.all %}
+                    ❤️
+                {% else %}
+                    ♡
+                {% endif %}
+
+                <span>{{ tweet.likes.count }}</span>
+            </button>
+        </form>
+
+
+        <!-- Comments -->
         <a
             href="{% url 'tweet_detail' tweet.id %}"
-            class="tweet-action"
+            class="tweet-action-btn"
         >
-            💬 View
+            💬
+            <span>{{ tweet.comments.count }}</span>
         </a>
 
+
+        <!-- Bookmark -->
         <form
             method="POST"
             action="{% url 'tweet_bookmark' tweet.id %}"
@@ -115,14 +147,28 @@
         >
             {% csrf_token %}
 
-            <button type="submit" class="tweet-action border-0 bg-transparent">
-                🔖 {{ tweet.bookmarks.count }}
+            <button
+                type="submit"
+                class="tweet-action-btn"
+            >
+                🔖
+                <span>{{ tweet.bookmarks.count }}</span>
             </button>
         </form>
+
+
+        <!-- View -->
+        <a
+            href="{% url 'tweet_detail' tweet.id %}"
+            class="tweet-action-btn ms-auto"
+        >
+            View →
+        </a>
 
     </div>
 
 </div>
+
 
 {% empty %}
 
@@ -136,7 +182,10 @@
         Be the first person to share something.
     </p>
 
-    <a href="{% url 'tweet_create' %}" class="btn btn-primary">
+    <a
+        href="{% url 'tweet_create' %}"
+        class="btn btn-primary"
+    >
         Create your first tweet
     </a>
 
@@ -151,25 +200,33 @@
 <div class="d-flex justify-content-center align-items-center gap-3 mt-4 mb-4">
 
     {% if page_obj.has_previous %}
+
         <a
             href="?page={{ page_obj.previous_page_number }}"
             class="btn btn-outline-primary"
         >
             ← Previous
         </a>
+
     {% endif %}
 
+
     <span class="text-muted small">
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        Page {{ page_obj.number }}
+        of
+        {{ page_obj.paginator.num_pages }}
     </span>
 
+
     {% if page_obj.has_next %}
+
         <a
             href="?page={{ page_obj.next_page_number }}"
             class="btn btn-outline-primary"
         >
             Next →
         </a>
+
     {% endif %}
 
 </div>
