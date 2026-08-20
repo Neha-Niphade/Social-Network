@@ -1,14 +1,15 @@
-from django.shortcuts import render, redirect
-from .models import Tweet
-from .forms import TweetForm
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
-from django.core.exceptions import PermissionDenied
-from .models import Tweet, Comment,Notification
 from django.contrib.auth.models import User
-from django.db.models import Q
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
+from django.db.models import Q
+
+from .forms import TweetForm
+from .models import Comment, Notification, Tweet
+
+from .permissions import IsOwnerOrReadOnly
 
 def home(request):
     tweets = Tweet.objects.all().order_by("-created_at")
@@ -276,3 +277,58 @@ def notifications(request):
         "tweets/notifications.html",
         {"notifications": notifications},
     )
+
+from rest_framework import permissions, viewsets
+from rest_framework.parsers import MultiPartParser, FormParser, JSONParser
+
+from .serializers import TweetSerializer, CommentSerializer
+
+class TweetViewSet(viewsets.ModelViewSet):
+    queryset = Tweet.objects.select_related("user").prefetch_related(
+        "likes",
+        "bookmarks",
+        "comments",
+    ).order_by("-created_at")
+
+    serializer_class = TweetSerializer
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly,
+    ]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.select_related(
+        "user",
+        "tweet",
+    ).prefetch_related(
+        "likes",
+    ).order_by("-created_at")
+
+    serializer_class = CommentSerializer
+    permission_classes = [
+        permissions.IsAuthenticatedOrReadOnly,
+        IsOwnerOrReadOnly,
+    ]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render, redirect
+
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("login")
+
+    else:
+        form = UserCreationForm()
+
+    return render(request, "registration/register.html", {"form": form})

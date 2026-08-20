@@ -2,29 +2,78 @@
 
 {% block content %}
 
-<h2 class="mt-4">🔔 Notifications</h2>
-
-{% for notification in notifications %}
-
-<div class="card mt-3">
-    <div class="card-body">
-
-        <p class="mb-1">
-            {{ notification.message }}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold mb-1">🔔 Notifications</h2>
+        <p class="text-muted mb-0">
+            Stay updated on what's happening.
         </p>
-
-        <small class="text-muted">
-            {{ notification.created_at }}
-        </small>
-
     </div>
 </div>
 
+
+{% for notification in notifications %}
+
+<div class="notification-card {% if not notification.is_read %}notification-unread{% endif %}">
+
+    <div class="d-flex align-items-start">
+
+        <!-- Notification icon -->
+        <div class="notification-icon me-3">
+            {% if "liked" in notification.message %}
+                ❤️
+            {% elif "commented" in notification.message %}
+                💬
+            {% elif "follow" in notification.message %}
+                👤
+            {% else %}
+                🔔
+            {% endif %}
+        </div>
+
+
+        <!-- Content -->
+        <div class="flex-grow-1">
+
+            <p class="mb-1 notification-message">
+                {{ notification.message }}
+            </p>
+
+            <small class="text-muted">
+                {{ notification.created_at|timesince }} ago
+            </small>
+
+        </div>
+
+
+        <!-- Unread indicator -->
+        {% if not notification.is_read %}
+            <span
+                class="notification-dot"
+                title="Unread notification"
+            ></span>
+        {% endif %}
+
+    </div>
+
+</div>
+
+
 {% empty %}
 
-<p class="text-muted mt-4">
-    You have no notifications yet.
-</p>
+<div class="empty-state text-center mt-4">
+
+    <div class="display-6 mb-3">
+        🔔
+    </div>
+
+    <h5>No notifications yet</h5>
+
+    <p class="text-muted mb-0">
+        You'll see likes, comments, and follows here.
+    </p>
+
+</div>
 
 {% endfor %}
 
