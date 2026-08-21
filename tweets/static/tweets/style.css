@@ -190,3 +190,47 @@
     margin-top: 6px;
     flex-shrink: 0;
 }
+
+/* =========================
+   Final Mobile Polish
+   ========================= */
+
+@media (max-width: 576px) {
+
+    main.container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .tweet-card {
+        padding: 15px;
+    }
+
+    .tweet-actions {
+        flex-wrap: wrap;
+    }
+
+    .tweet-action-btn {
+        padding: 6px 7px;
+    }
+
+    .profile-header {
+        padding: 18px;
+    }
+
+    .comment-card {
+        padding: 13px;
+    }
+
+    .comment-composer .d-flex {
+        flex-direction: column;
+    }
+
+    .comment-composer .btn {
+        width: 100%;
+    }
+
+    .notification-card {
+        padding: 14px;
+    }
+}

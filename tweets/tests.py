@@ -1,7 +1,8 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import Tweet, Comment, Notification
-
+from rest_framework.test import APITestCase
+from rest_framework import status
 
 class TweetTestCase(TestCase):
 
@@ -288,7 +289,21 @@ class TweetTestCase(TestCase):
             response.url
         )
 
-    # 10. Logged-out users cannot like a tweet
+    # 10. Tweet detail page renders without template errors
+    def test_tweet_detail_page_renders(self):
+        tweet = Tweet.objects.create(
+            user=self.user,
+            text="Tweet for detail page test"
+        )
+
+        response = self.client.get(
+            f"/tweet/{tweet.id}/"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Tweet for detail page test")
+
+    # 11. Logged-out users cannot like a tweet
     def test_logged_out_user_cannot_like_tweet(self):
         tweet = Tweet.objects.create(
             user=self.user,
@@ -307,4 +322,96 @@ class TweetTestCase(TestCase):
 
         self.assertFalse(
             tweet.likes.exists()
+        )
+
+class TweetAPITestCase(APITestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username="apiuser",
+            password="apipass123"
+        )
+
+        self.other_user = User.objects.create_user(
+            username="otherapiuser",
+            password="otherpass123"
+        )
+
+        self.tweet = Tweet.objects.create(
+            user=self.other_user,
+            text="Other user's API tweet"
+        )
+
+    def test_api_can_list_tweets(self):
+        response = self.client.get("/api/tweets/")
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_200_OK
+        )
+
+    def test_authenticated_user_can_create_tweet(self):
+        self.client.login(
+            username="apiuser",
+            password="apipass123"
+        )
+
+        response = self.client.post(
+            "/api/tweets/",
+            {
+                "text": "Created through API"
+            },
+            format="json"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_201_CREATED
+        )
+
+        self.assertTrue(
+            Tweet.objects.filter(
+                user=self.user,
+                text="Created through API"
+            ).exists()
+        )
+
+    def test_unauthenticated_user_cannot_create_tweet(self):
+        response = self.client.post(
+            "/api/tweets/",
+            {
+                "text": "Unauthorized tweet"
+            },
+            format="json"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN
+        )
+
+    def test_user_cannot_edit_other_users_tweet(self):
+        self.client.login(
+            username="apiuser",
+            password="apipass123"
+        )
+
+        response = self.client.patch(
+            f"/api/tweets/{self.tweet.id}/",
+            {
+                "text": "Hacked tweet"
+            },
+            format="json"
+        )
+
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_403_FORBIDDEN
+        )
+
+        self.tweet.refresh_from_db()
+
+        self.assertEqual(
+            self.tweet.text,
+            "Other user's API tweet"
         )

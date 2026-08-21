@@ -2,162 +2,334 @@
 
 {% block content %}
 
-<div class="card mt-4">
+<!-- Back -->
+<div class="mb-3">
+    <a href="{% url 'tweet_list' %}" class="text-muted">
+        ← Back to Home
+    </a>
+</div>
 
-    <div class="card-body">
 
-        <h5 class="card-title">
-            👤 {{ tweet.user.username }}
-        </h5>
+<!-- Tweet -->
+<div class="tweet-card">
 
-        <p class="card-text fs-5">
-            {{ tweet.text }}
-        </p>
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-start mb-3">
 
-        {% if tweet.photo %}
-            <img src="{{ tweet.photo.url }}"
-                 class="img-fluid">
+        <div class="d-flex align-items-center">
+
+            <div class="tweet-avatar me-3">
+                {{ tweet.user.username|first|upper }}
+            </div>
+
+            <div>
+                <a
+                    href="{% url 'profile_detail' tweet.user.username %}"
+                    class="fw-semibold text-dark"
+                >
+                    {{ tweet.user.username }}
+                </a>
+
+                <div class="text-muted small">
+                    {{ tweet.created_at|timesince }} ago
+                </div>
+            </div>
+
+        </div>
+
+
+        {% if tweet.user == request.user %}
+
+        <div class="dropdown">
+
+            <button
+                class="btn btn-sm btn-light"
+                type="button"
+                data-bs-toggle="dropdown"
+            >
+                ⋮
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+
+                <li>
+                    <a
+                        class="dropdown-item"
+                        href="{% url 'tweet_edit' tweet.id %}"
+                    >
+                        ✏️ Edit
+                    </a>
+                </li>
+
+                <li>
+                    <a
+                        class="dropdown-item text-danger"
+                        href="{% url 'tweet_delete' tweet.id %}"
+                    >
+                        🗑️ Delete
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
         {% endif %}
 
-        <small class="text-muted">
-            {{ tweet.created_at }}
-        </small>
+    </div>
 
-        <hr>
 
-        <!-- Tweet Like -->
-        <form method="POST"
-              action="{% url 'tweet_like' tweet.id %}"
-              class="d-inline">
+    <!-- Text -->
+    <div class="tweet-text mb-3">
+        {{ tweet.text }}
+    </div>
 
+
+    <!-- Image -->
+    {% if tweet.photo %}
+        <img
+            src="{{ tweet.photo.url }}"
+            class="tweet-image mb-3"
+            alt="Tweet image"
+        >
+    {% endif %}
+
+
+    <!-- Tweet actions -->
+    <div class="tweet-actions">
+
+        <form
+            method="POST"
+            action="{% url 'tweet_like' tweet.id %}"
+            class="d-inline"
+        >
             {% csrf_token %}
 
-            <button type="submit"
-                    class="btn btn-outline-danger btn-sm">
-                ❤️ {{ tweet.likes.count }}
+            <button
+                type="submit"
+                class="tweet-action-btn {% if request.user in tweet.likes.all %}liked{% endif %}"
+            >
+                {% if request.user in tweet.likes.all %}
+                    ❤️
+                {% else %}
+                    ♡
+                {% endif %}
+
+                <span>{{ tweet.likes.count }}</span>
+            </button>
+        </form>
+
+        <span class="tweet-action-btn">
+            💬
+            <span>{{ tweet.comments.count }}</span>
+        </span>
+
+        <form
+            method="POST"
+            action="{% url 'tweet_bookmark' tweet.id %}"
+            class="d-inline"
+        >
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="tweet-action-btn"
+            >
+                🔖
+                <span>{{ tweet.bookmarks.count }}</span>
             </button>
 
         </form>
-
-        <!-- Edit/Delete Tweet -->
-        {% if tweet.user == request.user %}
-
-            <a href="{% url 'tweet_edit' tweet.id %}"
-               class="btn btn-outline-primary btn-sm">
-                Edit
-            </a>
-
-            <a href="{% url 'tweet_delete' tweet.id %}"
-               class="btn btn-outline-danger btn-sm">
-                Delete
-            </a>
-
-        {% endif %}
 
     </div>
 
 </div>
 
 
-<!-- Comments -->
+<!-- Comments section -->
 
-<h4 class="mt-4">
-    Comments
-</h4>
+<div class="mt-4">
 
-{% for comment in tweet.comments.all %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
 
-    <div class="border-top pt-2 mt-2">
+        <h4 class="fw-bold mb-0">
+            Comments
+        </h4>
 
-        <strong>
-            {{ comment.user.username }}
-        </strong>
-
-        <span>
-            {{ comment.text }}
+        <span class="text-muted small">
+            {{ tweet.comments.count }}
+            comment{{ tweet.comments.count|pluralize }}
         </span>
 
-        <form method="POST"
-              action="{% url 'comment_like' comment.id %}"
-              class="d-inline">
+    </div>
 
-            {% csrf_token %}
 
-            <button type="submit"
-                    class="btn btn-sm btn-outline-danger">
-                ❤️ {{ comment.likes.count }}
-            </button>
+    {% for comment in tweet.comments.all %}
 
-        </form>
+    <div class="comment-card mb-2">
 
-        {% if comment.user == request.user %}
+        <!-- Comment header -->
+        <div class="d-flex justify-content-between align-items-start">
 
-            <a href="{% url 'comment_edit' comment.id %}"
-               class="btn btn-outline-primary btn-sm">
-                Edit
-            </a>
+            <div class="d-flex align-items-center">
 
-            <form method="POST"
-                  action="{% url 'comment_delete' comment.id %}"
-                  class="d-inline">
+                <div class="comment-avatar me-2">
+                    {{ comment.user.username|first|upper }}
+                </div>
 
+                <div>
+
+                    <a
+                        href="{% url 'profile_detail' comment.user.username %}"
+                        class="fw-semibold text-dark"
+                    >
+                        {{ comment.user.username }}
+                    </a>
+
+                    <div class="text-muted small">
+                        {{ comment.created_at|timesince }} ago
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            {% if comment.user == request.user %}
+
+            <div class="dropdown">
+
+                <button
+                    class="btn btn-sm btn-light"
+                    type="button"
+                    data-bs-toggle="dropdown"
+                >
+                    ⋮
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+
+                    <li>
+                        <a
+                            class="dropdown-item"
+                            href="{% url 'comment_edit' comment.id %}"
+                        >
+                            ✏️ Edit
+                        </a>
+                    </li>
+
+                    <li>
+                        <form
+                            method="POST"
+                            action="{% url 'comment_delete' comment.id %}"
+                        >
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="dropdown-item text-danger"
+                            >
+                                🗑️ Delete
+                            </button>
+                        </form>
+                    </li>
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- Comment text -->
+        <div class="comment-text mt-2">
+            {{ comment.text }}
+        </div>
+
+
+        <!-- Comment actions -->
+        <div class="mt-2">
+
+            <form
+                method="POST"
+                action="{% url 'comment_like' comment.id %}"
+                class="d-inline"
+            >
                 {% csrf_token %}
 
-                <button type="submit"
-                        class="btn btn-outline-danger btn-sm">
-                    Delete
+                <button
+                    type="submit"
+                    class="tweet-action-btn"
+                >
+                    ❤️
+                    <span>{{ comment.likes.count }}</span>
                 </button>
 
             </form>
 
-        {% endif %}
+        </div>
 
     </div>
 
-{% empty %}
 
-    <p class="text-muted">
-        No comments yet.
-    </p>
+    {% empty %}
 
-{% endfor %}
+    <div class="empty-state text-center">
 
-
-<!-- Add Comment -->
-
-{% if user.is_authenticated %}
-
-    <form method="POST"
-          action="{% url 'comment_create' tweet.id %}"
-          class="mt-3">
-
-        {% csrf_token %}
-
-        <div class="input-group">
-
-            <input
-                type="text"
-                name="text"
-                class="form-control"
-                placeholder="Write a comment..."
-                required
-            >
-
-            <button type="submit"
-                    class="btn btn-primary">
-                Comment
-            </button>
-
+        <div class="display-6 mb-2">
+            💬
         </div>
 
-    </form>
+        <h5>No comments yet</h5>
 
-{% endif %}
+        <p class="text-muted mb-0">
+            Start the conversation.
+        </p>
+
+    </div>
+
+    {% endfor %}
 
 
-<a href="{% url 'tweet_list' %}"
-   class="btn btn-secondary mt-3">
-    ← Back
-</a>
+    <!-- Add comment -->
+
+    {% if user.is_authenticated %}
+
+    <div class="comment-composer mt-3">
+
+        <form
+            method="POST"
+            action="{% url 'comment_create' tweet.id %}"
+        >
+            {% csrf_token %}
+
+            <div class="d-flex gap-2">
+
+                <input
+                    type="text"
+                    name="text"
+                    class="form-control"
+                    placeholder="Write a comment..."
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Comment
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}
