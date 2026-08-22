@@ -11,6 +11,8 @@ from .models import Comment, Notification, Tweet
 
 from .permissions import IsOwnerOrReadOnly
 
+from .services.moderation import moderate_tweet
+
 def home(request):
     tweets = Tweet.objects.all().order_by("-created_at")
 
@@ -296,7 +298,24 @@ class TweetViewSet(viewsets.ModelViewSet):
         IsOwnerOrReadOnly,
     ]
 
+    parser_classes = [
+        JSONParser,
+        MultiPartParser,
+        FormParser,
+    ]
+
     def perform_create(self, serializer):
+        text = serializer.validated_data.get("text", "")
+
+        if not moderate_tweet(text):
+            from rest_framework.exceptions import ValidationError
+
+            raise ValidationError(
+                {
+                    "text": "This tweet was flagged by AI moderation."
+                }
+            )
+
         serializer.save(user=self.request.user)
 
 
